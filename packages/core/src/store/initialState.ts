@@ -8,6 +8,11 @@ export const infiniteExtent: CoordinateExtent = [
 ];
 
 const initialState: ReactFlowStore = {
+  scale: 1,
+  scroll: {
+    left: 0,
+    top: 0,
+  },
   rfId: '1',
   width: 0,
   height: 0,

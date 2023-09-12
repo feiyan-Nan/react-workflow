@@ -2,7 +2,6 @@ import { MouseEvent } from 'react';
 import ReactFlow, {
   MiniMap,
   Background,
-  BackgroundVariant,
   Controls,
   ReactFlowProvider,
   Node,
@@ -94,16 +93,16 @@ const BasicFlow = () => {
       selectNodesOnDrag={false}
       elevateNodesOnSelect={false}
     >
-      <Background variant={BackgroundVariant.Dots} />
-      <MiniMap />
-      <Controls />
+      <Background />
+      {/*<MiniMap />*/}
+      {/*<Controls />*/}
 
-      <Panel position="top-right">
-        <button onClick={resetTransform}>reset transform</button>
-        <button onClick={updatePos}>change pos</button>
-        <button onClick={toggleClassnames}>toggle classnames</button>
-        <button onClick={logToObject}>toObject</button>
-      </Panel>
+      {/*<Panel position="top-right">*/}/
+      {/*  <button onClick={resetTransform}>reset transform</button>*/}
+      {/*  <button onClick={updatePos}>change pos</button>*/}
+      {/*  <button onClick={toggleClassnames}>toggle classnames</button>*/}
+      {/*  <button onClick={logToObject}>toObject</button>*/}
+      {/*</Panel>*/}
     </ReactFlow>
   );
 };

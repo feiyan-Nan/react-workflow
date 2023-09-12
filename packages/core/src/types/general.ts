@@ -140,6 +140,11 @@ export type ViewportHelperFunctions = {
 };
 
 export type ReactFlowStore = {
+  scale: number;
+  scroll: {
+    left: number;
+    top: number;
+  };
   rfId: string;
   width: number;
   height: number;

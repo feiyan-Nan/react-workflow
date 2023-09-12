@@ -1,88 +1,43 @@
-import { memo, useRef } from 'react';
-import cc from 'classcat';
-import { useStore, ReactFlowState } from '@reactflow/core';
-import { shallow } from 'zustand/shallow';
+import React from "react";
+import cc from "classcat";
+import { ReactFlowState, useStore } from "@reactflow/core";
+import { shallow } from "zustand/shallow";
+import { BackgroundProps } from "./types";
 
-import { BackgroundProps, BackgroundVariant } from './types';
-import { DotPattern, LinePattern } from './Patterns';
+const selector = (s: ReactFlowState) => ({ scroll: s.scroll, scale: s.scale });
 
-const defaultColor = {
-  [BackgroundVariant.Dots]: '#91919a',
-  [BackgroundVariant.Lines]: '#eee',
-  [BackgroundVariant.Cross]: '#e2e2e2',
+const id = "line";
+type DotPatternProps = {
+  radius: number;
+  color: string;
 };
 
-const defaultSize = {
-  [BackgroundVariant.Dots]: 1,
-  [BackgroundVariant.Lines]: 1,
-  [BackgroundVariant.Cross]: 6,
-};
 
-const selector = (s: ReactFlowState) => ({ transform: s.transform, patternId: `pattern-${s.rfId}` });
+export function DotPattern({ color, radius }: DotPatternProps) {
+  return <circle cx={radius} cy={radius} r={radius} fill={color} />;
+}
 
-function Background({
-  id,
-  variant = BackgroundVariant.Dots,
-  // only used for dots and cross
-  gap = 20,
-  // only used for lines and cross
-  size,
-  lineWidth = 1,
-  offset = 2,
-  color,
-  style,
-  className,
-}: BackgroundProps) {
-  const ref = useRef<SVGSVGElement>(null);
-  const { transform, patternId } = useStore(selector, shallow);
-  const patternColor = color || defaultColor[variant];
-  const patternSize = size || defaultSize[variant];
-  const isDots = variant === BackgroundVariant.Dots;
-  const isCross = variant === BackgroundVariant.Cross;
-  const gapXY: [number, number] = Array.isArray(gap) ? gap : [gap, gap];
-  const scaledGap: [number, number] = [gapXY[0] * transform[2] || 1, gapXY[1] * transform[2] || 1];
-  const scaledSize = patternSize * transform[2];
-
-  const patternDimensions: [number, number] = isCross ? [scaledSize, scaledSize] : scaledGap;
-
-  const patternOffset = isDots
-    ? [scaledSize / offset, scaledSize / offset]
-    : [patternDimensions[0] / offset, patternDimensions[1] / offset];
-
+const Background = React.forwardRef(({ style, className }: BackgroundProps, ref: React.ForwardedRef<SVGSVGElement>) => {
+  const { scale, scroll } = useStore(selector, shallow);
+  console.log(scale, scroll, '哈哈哈');
   return (
     <svg
-      className={cc(['react-flow__background', className])}
+      className={cc(["react-flow__background", className])}
       style={{
-        ...style,
-        position: 'absolute',
-        width: '100%',
-        height: '100%',
-        top: 0,
-        left: 0,
+        ...style
+        // zIndex: -1,
       }}
       ref={ref}
       data-testid="rf__background"
     >
-      <pattern
-        id={patternId+id}
-        x={transform[0] % scaledGap[0]}
-        y={transform[1] % scaledGap[1]}
-        width={scaledGap[0]}
-        height={scaledGap[1]}
-        patternUnits="userSpaceOnUse"
-        patternTransform={`translate(-${patternOffset[0]},-${patternOffset[1]})`}
-      >
-        {isDots ? (
-          <DotPattern color={patternColor} radius={scaledSize / offset} />
-        ) : (
-          <LinePattern dimensions={patternDimensions} color={patternColor} lineWidth={lineWidth} />
-        )}
+      <pattern id={id} x={scroll.left} y={scroll.top} width={20 * scale} height={20 * scale}
+               patternUnits="userSpaceOnUse">
+        <DotPattern color={"rgba(184,190,204,0.5)"} radius={1.5 * scale} />
       </pattern>
-      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${patternId+id})`} />
+      <rect x="0" y="0" width="100%" height="100%" fill={`url(#${id})`} />
     </svg>
   );
-}
+});
 
-Background.displayName = 'Background';
-
-export default memo(Background);
+Background.displayName = "Background";
+export default React.memo(Background);
