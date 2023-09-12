@@ -1,4 +1,5 @@
 export { default as ReactFlow } from './container/ReactFlow';
+export { default as ReactWorkFlow } from './container/ReactWorkFlow';
 export { default as Handle } from './components/Handle';
 export { default as EdgeText } from './components/Edges/EdgeText';
 export { default as StraightEdge, getStraightPath } from './components/Edges/StraightEdge';

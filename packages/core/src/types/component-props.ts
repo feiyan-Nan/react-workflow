@@ -40,6 +40,14 @@ import type {
 } from '.';
 import { ValidConnectionFunc } from '../components/Handle/utils';
 
+
+export type ReactWorkFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
+  nodes: any;
+}
+
+export type ReactWorkFlowRefType = HTMLDivElement;
+
+
 export type ReactFlowProps = Omit<HTMLAttributes<HTMLDivElement>, 'onError'> & {
   nodes?: Node[];
   edges?: Edge[];

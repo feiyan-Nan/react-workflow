@@ -14,6 +14,15 @@ A highly customizable React component for building interactive graphs and node-b
 
 </div>
 
+
+在根目录安装
+`pnpm install react -w`
+
+开发依赖
+`pnpm install react -wD`
+
+
+pnpm add axios --filter @qftjs/monorepo1
 ---
 
 ## 🚨 Upcoming Changes 
