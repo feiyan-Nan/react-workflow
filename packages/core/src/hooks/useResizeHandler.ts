@@ -17,7 +17,7 @@ function useResizeHandler(rendererNode: MutableRefObject<HTMLDivElement | null>)
       }
 
       const size = getDimensions(rendererNode.current);
-
+      console.log('size', size);
       if (size.height === 0 || size.width === 0) {
         store.getState().onError?.('004', errorMessages['error004']());
       }

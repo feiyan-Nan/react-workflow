@@ -92,6 +92,7 @@ const ZoomPane = ({
       const bbox = zoomPane.current.getBoundingClientRect();
       const d3ZoomInstance = zoom().scaleExtent([minZoom, maxZoom]).translateExtent(translateExtent);
       const selection = select(zoomPane.current as Element).call(d3ZoomInstance);
+
       const updatedTransform = zoomIdentity
         .translate(defaultViewport.x, defaultViewport.y)
         .scale(clamp(defaultViewport.zoom, minZoom, maxZoom));

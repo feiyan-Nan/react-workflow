@@ -103,7 +103,7 @@ const NodeRenderer = (props: NodeRendererProps) => {
           height: node.height ?? 0,
           origin: props.nodeOrigin,
         });
-
+        console.log('posX',posX);
         return (
           <NodeComponent
             key={node.id}

@@ -16,6 +16,7 @@ import { infiniteExtent } from '../../store/initialState';
 import { ConnectionLineType, ConnectionMode, PanOnScrollMode, SelectionMode } from '../../types';
 import type { EdgeTypes, NodeOrigin, NodeTypes, ReactFlowProps, ReactFlowRefType, Viewport } from '../../types';
 import { isMacOs } from '../../utils';
+import { createRFStore } from "../../store";
 
 const defaultNodeTypes: NodeTypes = {
   input: InputNode,
@@ -44,7 +45,7 @@ const wrapperStyle: CSSProperties = {
   zIndex: 0,
 };
 
-const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
+const ReactWorkFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   (
     {
       nodes,
@@ -296,6 +297,6 @@ const ReactFlow = forwardRef<ReactFlowRefType, ReactFlowProps>(
   }
 );
 
-ReactFlow.displayName = 'ReactFlow';
+ReactWorkFlow.displayName = 'ReactFlow';
 
-export default ReactFlow;
+export default ReactWorkFlow;
