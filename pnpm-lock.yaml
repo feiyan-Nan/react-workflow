@@ -238,6 +238,9 @@ importers:
       d3-zoom:
         specifier: ^3.0.0
         version: registry.npmjs.org/d3-zoom@3.0.0
+      lodash:
+        specifier: ^4.17.21
+        version: registry.npmjs.org/lodash@4.17.21
       react-dnd:
         specifier: ^16.0.1
         version: registry.npmjs.org/react-dnd@16.0.1(@types/node@18.7.16)(@types/react@18.0.19)(react@18.2.0)
@@ -260,6 +263,9 @@ importers:
       '@reactflow/tsconfig':
         specifier: workspace:*
         version: link:../../tooling/tsconfig
+      '@types/lodash':
+        specifier: ^4.14.198
+        version: registry.npmjs.org/@types/lodash@4.14.198
       '@types/node':
         specifier: ^18.7.16
         version: registry.npmjs.org/@types/node@18.7.16
@@ -2013,6 +2019,12 @@ packages:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.12.tgz}
     name: '@types/json-schema'
     version: 7.0.12
+    dev: true
+
+  registry.npmjs.org/@types/lodash@4.14.198:
+    resolution: {integrity: sha512-trNJ/vtMZYMLhfN45uLq4ShQSw0/S7xCTLLVM+WM1rmFpba/VS42jVUgaO3w/NOLiWR/09lnYk0yMaA/atdIsg==, registry: https://registry.npmjs.com/, tarball: https://registry.npmjs.org/@types/lodash/-/lodash-4.14.198.tgz}
+    name: '@types/lodash'
+    version: 4.14.198
     dev: true
 
   registry.npmjs.org/@types/minimist@1.2.2:

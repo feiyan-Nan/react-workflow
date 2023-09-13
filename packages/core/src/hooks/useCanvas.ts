@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useEventListener, useMemoizedFn, useSize } from 'ahooks';
+import { shallow } from 'zustand/shallow';
+import { useStore } from './useStore';
+import { ReactFlowState } from '../types';
 
 interface Position {
   x: number;
@@ -13,12 +16,9 @@ export interface Delta {
 
 export interface CanvasContext {
   size?: Size;
-  scale: number;
   scroll: Delta;
   scrollBounds: Delta;
   scrollBy: (delta: Delta) => void;
-  updateScale: (val: number) => void;
-  resetCanvas: () => void;
 }
 
 export interface Size {
@@ -31,6 +31,8 @@ interface IProps {
   ref: React.RefObject<HTMLDivElement>;
 }
 
+const selector = (s: ReactFlowState) => ({ scale: s.scale, scroll: s.scroll, setScroll: s.setScroll });
+
 /**
  * 画布缩放拖拽逻辑
  * @param ref 缩放拖拽目标
@@ -38,40 +40,18 @@ interface IProps {
  */
 
 export function useCanvas({ rootRef, ref }: IProps): CanvasContext {
+  const { scale, scroll, setScroll } = useStore(selector, shallow);
   // 当前滚动状态
   const size = useSize(rootRef);
   const nodesSize = useSize(ref);
-  const [scroll, setScroll] = useState({ left: 0, top: 0 });
   // 滚动边界（向上及向左滚动的最大范围）
   const [scrollBounds, setScrollBounds] = useState({ left: 0, top: 0 });
 
-  // 缩放
-  const [scale, setScale] = useState(1);
   // 拖拽事件
   const [isDrag, setIsDrag] = useState(false);
 
-  const initPosition = useMemo(() => ({ left: 0, top: 0 }), []);
-
-  // 节点左上角位置不变，仅调整缩放比例
-  const updateScale = useCallback(
-    (newScale: number) => {
-      if (scale === newScale) return;
-
-      // 更新scale
-      setScale(newScale);
-    },
-    [scale],
-  );
-
-  // 调整缩放比例，且流程起始点位置重置
-  const resetCanvas = useCallback(() => {
-    const newScale = 1;
-    updateScale(newScale);
-    setScroll(initPosition);
-  }, [ref, updateScale]);
-
   const scrollBy = useMemoizedFn((delta: Delta) => {
-    setScroll(oldValue => {
+    setScroll((oldValue) => {
       const hMeetBounds = oldValue.left >= 0 || oldValue.left <= scrollBounds.left;
       const vMeetBounds = oldValue.top >= 0 || oldValue.top <= scrollBounds.top;
 
@@ -123,7 +103,7 @@ export function useCanvas({ rootRef, ref }: IProps): CanvasContext {
       }
       scrollBy({ left: deltaX, top: deltaY });
     },
-    [shiftKey, scrollBy],
+    [shiftKey, scrollBy]
   );
   useEventListener('keydown', onKeydown, {
     passive: true,
@@ -145,7 +125,7 @@ export function useCanvas({ rootRef, ref }: IProps): CanvasContext {
       if (e.target !== rootRef.current || e.buttons != 1) return;
       setIsDrag(true);
     },
-    [rootRef],
+    [rootRef]
   );
   const onMouseUp = useCallback(() => {
     setIsDrag(false);
@@ -157,7 +137,7 @@ export function useCanvas({ rootRef, ref }: IProps): CanvasContext {
 
       scrollBy({ left: e.movementX, top: e.movementY });
     },
-    [isDrag, scrollBy],
+    [isDrag, scrollBy]
   );
   useEventListener('mousedown', onMouseDown, {
     target: rootRef,
@@ -194,7 +174,7 @@ export function useCanvas({ rootRef, ref }: IProps): CanvasContext {
     //   left: Math.max(Math.min(scroll.left, 0), newScrollBounds.left),
     //   top: Math.max(Math.min(scroll.top, 0), newScrollBounds.top),
     // };
-    setScroll(prev => {
+    setScroll((prev) => {
       if (prev.top === top && prev.left === left) {
         return prev;
       }
@@ -206,13 +186,10 @@ export function useCanvas({ rootRef, ref }: IProps): CanvasContext {
   return useMemo(
     () => ({
       size,
-      scale,
       scroll,
       scrollBounds,
       scrollBy,
-      updateScale,
-      resetCanvas,
     }),
-    [size, scale, scroll, scrollBounds, scrollBy, updateScale, resetCanvas],
+    [size, scroll, scrollBounds, scrollBy]
   );
 }

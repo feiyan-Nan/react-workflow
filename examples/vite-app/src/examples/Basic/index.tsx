@@ -95,9 +95,9 @@ const BasicFlow = () => {
     >
       <Background />
       {/*<MiniMap />*/}
-      {/*<Controls />*/}
+      <Controls />
 
-      {/*<Panel position="top-right">*/}/
+      {/*<Panel position="top-right">*/}
       {/*  <button onClick={resetTransform}>reset transform</button>*/}
       {/*  <button onClick={updatePos}>change pos</button>*/}
       {/*  <button onClick={toggleClassnames}>toggle classnames</button>*/}

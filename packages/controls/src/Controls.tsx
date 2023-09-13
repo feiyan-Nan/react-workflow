@@ -1,13 +1,11 @@
-import { memo, useEffect, useState, type FC, type PropsWithChildren } from 'react';
+import { type FC, memo, type PropsWithChildren, useEffect, useMemo, useState } from 'react';
 import cc from 'classcat';
 import { shallow } from 'zustand/shallow';
-import { useStore, useStoreApi, useReactFlow, Panel, type ReactFlowState } from '@reactflow/core';
+import { Panel, type ReactFlowState, useStore } from '@reactflow/core';
 
 import PlusIcon from './Icons/Plus';
 import MinusIcon from './Icons/Minus';
 import FitviewIcon from './Icons/FitView';
-import LockIcon from './Icons/Lock';
-import UnlockIcon from './Icons/Unlock';
 import ControlButton from './ControlButton';
 
 import type { ControlProps } from './types';
@@ -16,26 +14,31 @@ const selector = (s: ReactFlowState) => ({
   isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
   minZoomReached: s.transform[2] <= s.minZoom,
   maxZoomReached: s.transform[2] >= s.maxZoom,
+  setScale: s.setScale,
+  scale: s.scale,
+  setScroll: s.setScroll,
 });
 
 const Controls: FC<PropsWithChildren<ControlProps>> = ({
   style,
   showZoom = true,
   showFitView = true,
-  showInteractive = true,
-  fitViewOptions,
   onZoomIn,
   onZoomOut,
   onFitView,
-  onInteractiveChange,
   className,
   children,
-  position = 'bottom-left',
+  position = 'bottom-right',
 }) => {
-  const store = useStoreApi();
   const [isVisible, setIsVisible] = useState<boolean>(false);
-  const { isInteractive, minZoomReached, maxZoomReached } = useStore(selector, shallow);
-  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const { setScale, scale, setScroll } = useStore(selector, shallow);
+  const minZoomReached = useMemo(() => {
+    return scale <= 0.25;
+  }, [scale]);
+
+  const maxZoomReached = useMemo(() => {
+    return scale >= 1.25;
+  }, [scale]);
 
   useEffect(() => {
     setIsVisible(true);
@@ -46,28 +49,19 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
   }
 
   const onZoomInHandler = () => {
-    zoomIn();
+    setScale(Math.min(scale + 0.25, 1.25));
     onZoomIn?.();
   };
 
   const onZoomOutHandler = () => {
-    zoomOut();
+    setScale(Math.max(scale - 0.25, 0.25));
     onZoomOut?.();
   };
 
   const onFitViewHandler = () => {
-    fitView(fitViewOptions);
+    setScale(1);
+    setScroll({ left: 0, top: 0 });
     onFitView?.();
-  };
-
-  const onToggleInteractivity = () => {
-    store.setState({
-      nodesDraggable: !isInteractive,
-      nodesConnectable: !isInteractive,
-      elementsSelectable: !isInteractive,
-    });
-
-    onInteractiveChange?.(!isInteractive);
   };
 
   return (
@@ -77,28 +71,6 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
       style={style}
       data-testid="rf__controls"
     >
-      {showZoom && (
-        <>
-          <ControlButton
-            onClick={onZoomInHandler}
-            className="react-flow__controls-zoomin"
-            title="zoom in"
-            aria-label="zoom in"
-            disabled={maxZoomReached}
-          >
-            <PlusIcon />
-          </ControlButton>
-          <ControlButton
-            onClick={onZoomOutHandler}
-            className="react-flow__controls-zoomout"
-            title="zoom out"
-            aria-label="zoom out"
-            disabled={minZoomReached}
-          >
-            <MinusIcon />
-          </ControlButton>
-        </>
-      )}
       {showFitView && (
         <ControlButton
           className="react-flow__controls-fitview"
@@ -109,15 +81,28 @@ const Controls: FC<PropsWithChildren<ControlProps>> = ({
           <FitviewIcon />
         </ControlButton>
       )}
-      {showInteractive && (
-        <ControlButton
-          className="react-flow__controls-interactive"
-          onClick={onToggleInteractivity}
-          title="toggle interactivity"
-          aria-label="toggle interactivity"
-        >
-          {isInteractive ? <UnlockIcon /> : <LockIcon />}
-        </ControlButton>
+      {showZoom && (
+        <>
+          <ControlButton
+            onClick={onZoomOutHandler}
+            className="react-flow__controls-zoomout"
+            title="zoom out"
+            aria-label="zoom out"
+            disabled={minZoomReached}
+          >
+            <MinusIcon />
+          </ControlButton>
+          <span className="react-flow__controls-number">{scale * 100}%</span>
+          <ControlButton
+            onClick={onZoomInHandler}
+            className="react-flow__controls-zoomin"
+            title="zoom in"
+            aria-label="zoom in"
+            disabled={maxZoomReached}
+          >
+            <PlusIcon />
+          </ControlButton>
+        </>
       )}
       {children}
     </Panel>

@@ -1,27 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
-  MouseEvent as ReactMouseEvent,
-  TouchEvent as ReactTouchEvent,
   ComponentType,
   MemoExoticComponent,
+  MouseEvent as ReactMouseEvent,
+  TouchEvent as ReactTouchEvent,
 } from 'react';
 import type { D3DragEvent, Selection as D3Selection, SubjectPosition, ZoomBehavior } from 'd3';
 
-import type { XYPosition, Rect, Transform, CoordinateExtent } from './utils';
-import type { NodeChange, EdgeChange } from './changes';
+import type { CoordinateExtent, Rect, Transform, XYPosition } from './utils';
+import { Scroll, ScrollFun } from './utils';
+import type { EdgeChange, NodeChange } from './changes';
 import type {
   Node,
-  NodeInternals,
   NodeDimensionUpdate,
-  NodeProps,
-  WrapNodeProps,
-  NodeDragItem,
   NodeDragHandler,
-  SelectionDragHandler,
+  NodeDragItem,
+  NodeInternals,
   NodeOrigin,
+  NodeProps,
+  SelectionDragHandler,
+  WrapNodeProps,
 } from './nodes';
 import type { Edge, EdgeProps, WrapEdgeProps } from './edges';
-import type { HandleType, ConnectingHandle } from './handles';
+import type { ConnectingHandle, HandleType } from './handles';
 import type { DefaultEdgeOptions } from '.';
 import type { ReactFlowInstance } from './instance';
 
@@ -141,10 +142,7 @@ export type ViewportHelperFunctions = {
 
 export type ReactFlowStore = {
   scale: number;
-  scroll: {
-    left: number;
-    top: number;
-  };
+  scroll: Scroll;
   rfId: string;
   width: number;
   height: number;
@@ -240,6 +238,8 @@ export type ReactFlowStore = {
 };
 
 export type ReactFlowActions = {
+  setScale: (value: number) => void;
+  setScroll: (value: Scroll | ScrollFun) => void;
   setNodes: (nodes: Node[]) => void;
   getNodes: () => Node[];
   setEdges: (edges: Edge[]) => void;

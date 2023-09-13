@@ -7,18 +7,20 @@ import { getHandleBounds } from '../components/Nodes/utils';
 import { createNodeInternals, fitView, updateAbsoluteNodePositions, updateNodesAndEdgesSelections } from './utils';
 import initialState from './initialState';
 import type {
-  ReactFlowState,
-  Node,
-  Edge,
-  NodeDimensionUpdate,
   CoordinateExtent,
-  NodeDimensionChange,
+  Edge,
   EdgeSelectionChange,
-  NodeSelectionChange,
-  NodePositionChange,
-  NodeDragItem,
-  UnselectNodesAndEdgesParams,
+  Node,
   NodeChange,
+  NodeDimensionChange,
+  NodeDimensionUpdate,
+  NodeDragItem,
+  NodePositionChange,
+  NodeSelectionChange,
+  ReactFlowState,
+  Scroll,
+  ScrollFun,
+  UnselectNodesAndEdgesParams,
   XYPosition,
 } from '../types';
 
@@ -26,6 +28,17 @@ const createRFStore = () =>
   createWithEqualityFn<ReactFlowState>(
     (set, get) => ({
       ...initialState,
+      setScale: (value: number) => {
+        set({ scale: value });
+      },
+      setScroll: (value: Scroll | ScrollFun) => {
+        if (typeof value === 'function') {
+          const { scroll } = get();
+          set({ scroll: value(scroll) });
+          return;
+        }
+        set({ scroll: value });
+      },
       setNodes: (nodes: Node[]) => {
         const { nodeInternals, nodeOrigin, elevateNodesOnSelect } = get();
         set({ nodeInternals: createNodeInternals(nodes, nodeInternals, nodeOrigin, elevateNodesOnSelect) });

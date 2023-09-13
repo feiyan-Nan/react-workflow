@@ -1,11 +1,11 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { ReactWorkFlowProps, ReactWorkFlowRefType } from "../../types";
 import cc from "classcat";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import ReactFlowProvider from "../../components/ReactFlowProvider";
 import { useCanvas } from "../../hooks/useCanvas";
-const flowStyle = {}
+import { useDragScroll } from "../../hooks/useDragScroll";
 
 const ReactWorkFlow = React.forwardRef<ReactWorkFlowRefType, ReactWorkFlowProps>(({ className, style, children }, ref) => {
   const flowRef = useRef<HTMLDivElement>(null);
@@ -15,6 +15,23 @@ const ReactWorkFlow = React.forwardRef<ReactWorkFlowRefType, ReactWorkFlowProps>
     rootRef: rootRef,
     ref: flowRef,
   });
+  // 拖拽滚动
+  useDragScroll({
+    rootRef,
+    size: canvasContext.size,
+    scrollBounds: canvasContext.scrollBounds,
+    scroll: canvasContext.scroll,
+    scrollThreshold: 100,
+    maxSpeed: 5,
+    scrollBy: canvasContext.scrollBy,
+    mouseScroll: true,
+    // scrollRate: 20, // 去掉滚动更加流畅
+  });
+  const flowStyle = useMemo(() => {
+    return {
+      transform: `translate(${canvasContext.scroll.left}px, ${canvasContext.scroll.top}px) scale(${canvasContext.scale})`,
+    };
+  }, [canvasContext.scroll.left, canvasContext.scroll.top, canvasContext.scale]);
   const onMainClick = () => {
     console.log('onMainClick')
   };
@@ -26,6 +43,7 @@ const ReactWorkFlow = React.forwardRef<ReactWorkFlowRefType, ReactWorkFlowProps>
           <div ref={rootRef} className="previewBlock" style={contentStyle} onClick={onMainClick}>
             {children}
             <div ref={flowRef} className='previewContent' style={flowStyle}>
+              <div style={{height: '2000px'}}></div>
               {/*{useMemo(*/}
               {/*  () => (*/}
               {/*    <FlowEditor Nodes={nodes} />*/}

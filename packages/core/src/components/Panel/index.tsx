@@ -20,6 +20,7 @@ function Panel({ position, children, className, style, ...rest }: PanelProps) {
       className={cc(['react-flow__panel', className, ...positionClasses])}
       style={{ ...style, pointerEvents }}
       {...rest}
+      onClick={(e) => e.stopPropagation()}
     >
       {children}
     </div>

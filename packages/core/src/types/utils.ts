@@ -26,4 +26,8 @@ export interface Box extends XYPosition {
 
 export type Transform = [number, number, number];
 
+export type Scroll = { left: number; top: number };
+
+export type ScrollFun = (val: Scroll) => Scroll;
+
 export type CoordinateExtent = [[number, number], [number, number]];
